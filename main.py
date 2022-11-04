@@ -73,7 +73,7 @@ def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
         best_order.append(best_feature)
         perm_featureset = np.hstack((perm_featureset, dataset[:,best_feature].reshape(-1,1))) if perm_featureset.size else np.expand_dims(dataset[:,best_feature], axis=1)
         end_time = (time.time() - start_time)/60
-        print('Iteration: ' + iteration + '\nBest Feature: ' + best_feature + '\nTime: ' + end_time )
+        print('Iteration #: ' + str(iteration) + '\nBest Feature: ' + str(best_feature) + '\nTime (in mins): ' + str(end_time))
 
     return results, best_order
 

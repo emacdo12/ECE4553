@@ -2,7 +2,7 @@ import numpy as np
 import time
 import os
 from glob import glob
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import pandas as pd
 
 def load_dataset(data_folder):

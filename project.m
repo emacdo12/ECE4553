@@ -1,6 +1,7 @@
 % Eve MacDonald & Matt MacMillan
 
 %% ---Load the data sets---
+close all;
 
 data_a = readtable('data\Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv');
 data_b = readtable('data\Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv');
@@ -64,6 +65,9 @@ allData_a(delete_rows,:) = [];
 allData_l(delete_rows,:) = [];
 allData_bl(delete_rows,:) = [];
 
+allData_t(delete_rows,:) = [];
+
+
 delete_columns = [];
 
 for i = 1:width(allData_a)
@@ -73,6 +77,11 @@ for i = 1:width(allData_a)
 end
 
 allData_a(:,delete_columns) = [];
+for i = 1:length(delete_columns)
+    allData_t(:,delete_columns(i)) = [];
+end
+
+
 
 
 %% ---SFS---
@@ -170,6 +179,16 @@ legend('Benign','Bot','DDos','DoS GoldenEye','DoS Hulk','DoS Slowhttptest', ...
 title('First two dimensions of PCA')
 hold off
 
+%% MRMR
+
+[idx,scores] = fscmrmr(allData_t,'Label');
+
+%% Generate Plot
+figure()
+bar(scores(idx(1:15)))
+xlabel('Predictor rank')
+ylabel('Predictor importance score')
+xticklabels(strrep(allData_t.Properties.VariableNames(idx(1:15)),'_','\_'))
 
 
 

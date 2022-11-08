@@ -32,7 +32,7 @@ def load_dataset(data_folder):
 def standardize_data(dataset):
     scaler = preprocessing.StandardScaler().fit(dataset)
     xscaled = scaler.transform(dataset)
-    return xscaled, scaler
+    return xscaled
 
 
 def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
@@ -88,12 +88,12 @@ def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
 def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
-    scaled_data, scaler = standardize_data(dataset)
+    scaled_data = standardize_data(dataset)
     crossvalidation_dictionary = {
         "amount": 5,
         "percent": 0.75
     }
-    # results, order = sequential_forward_selection(dataset, labels, crossvalidation_dictionary)
-    # print(order)
+    results, order = sequential_forward_selection(scaled_data, labels, crossvalidation_dictionary)
+    print(order)
 if __name__ == "__main__":
     main()

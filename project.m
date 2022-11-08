@@ -186,10 +186,19 @@ hold off
 %% Generate Plot
 figure()
 bar(scores(idx(1:15)))
+title('MRMR Scores')
 xlabel('Predictor rank')
 ylabel('Predictor importance score')
 xticklabels(strrep(allData_t.Properties.VariableNames(idx(1:15)),'_','\_'))
 
+%% Fishers 
 
+[index,feature_score] = feature_rank(allData_a',allData_bl);
+figure()
+bar(feature_score(1:15));
+title('Fisher Scores')
+xlabel('Predictor rank')
+ylabel('Fisher Score')
+xticklabels(strrep(allData_t.Properties.VariableNames(index(1:15)),'_','\_'))
 
 

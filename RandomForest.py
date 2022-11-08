@@ -28,7 +28,7 @@ def load_dataset(data_folder):
     labels = np.array([i == "BENIGN" for i in labels]).astype(int)
     return labels, dataset
     
-def RandomForest():
+def RandomForest(dataset, labels):
 
 
     return results
@@ -38,12 +38,7 @@ def RandomForest():
 def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
-    
-    crossvalidation_dictionary = {
-        "amount": 5,
-        "percent": 0.75
-    }
-    results, order = sequential_forward_selection(dataset, labels, crossvalidation_dictionary)
-    print(order)
+    results = RandomForest(dataset, labels)
+    print(results)
 if __name__ == "__main__":
     main()

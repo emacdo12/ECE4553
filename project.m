@@ -3,14 +3,14 @@
 %% ---Load the data sets---
 close all;
 
-data_a = readtable('data\Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv');
-data_b = readtable('data\Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv');
-data_c = readtable('data\Friday-WorkingHours-Morning.pcap_ISCX.csv');
-data_d = readtable('data\Monday-WorkingHours.pcap_ISCX.csv');
-data_e = readtable('data\Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv');
-data_f = readtable('data\Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv');
-data_g = readtable('data\Tuesday-WorkingHours.pcap_ISCX.csv');
-data_h = readtable('data\Wednesday-workingHours.pcap_ISCX.csv');
+data_a = readtable('data/Friday-WorkingHours-Afternoon-DDos.pcap_ISCX.csv');
+data_b = readtable('data/Friday-WorkingHours-Afternoon-PortScan.pcap_ISCX.csv');
+data_c = readtable('data/Friday-WorkingHours-Morning.pcap_ISCX.csv');
+data_d = readtable('data/Monday-WorkingHours.pcap_ISCX.csv');
+data_e = readtable('data/Thursday-WorkingHours-Afternoon-Infilteration.pcap_ISCX.csv');
+data_f = readtable('data/Thursday-WorkingHours-Morning-WebAttacks.pcap_ISCX.csv');
+data_g = readtable('data/Tuesday-WorkingHours.pcap_ISCX.csv');
+data_h = readtable('data/Wednesday-workingHours.pcap_ISCX.csv');
 
 %% ---Data Manipulation---
 %DDoS

@@ -2,6 +2,7 @@ import numpy as np
 import time
 import os
 from glob import glob
+from sklearn import preprocessing
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import pandas as pd
 
@@ -27,7 +28,10 @@ def load_dataset(data_folder):
     labels = np.array([i == "BENIGN" for i in labels]).astype(int)
     return labels, dataset
     
-
+def standardize_data(dataset):
+    scaler = preprocessing.StandardScaler().fit(dataset)
+    xscaled = scaler.transform(dataset)
+    return xscaled, scaler
 
 def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
     nfeatures = dataset.shape[1]
@@ -82,12 +86,12 @@ def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
 def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
-    
+    scaled_data, scaler = standardize_data(dataset)
     crossvalidation_dictionary = {
         "amount": 5,
         "percent": 0.75
     }
-    results, order = sequential_forward_selection(dataset, labels, crossvalidation_dictionary)
+    results, order = sequential_forward_selection(scaled_data, labels, crossvalidation_dictionary)
     print(order)
 if __name__ == "__main__":
     main()

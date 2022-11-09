@@ -2,6 +2,7 @@ import numpy as np
 import time
 import os
 from glob import glob
+from sklearn import preprocessing
 from sklearn.model_selection import cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
@@ -27,7 +28,12 @@ def load_dataset(data_folder):
     # check for infinities in dataset, throw out those rows
     labels = np.array([i == "BENIGN" for i in labels]).astype(int)
     return labels, dataset
-    
+
+def standardize_data(dataset):
+    scaler = preprocessing.StandardScaler().fit(dataset)
+    xscaled = scaler.transform(dataset)
+    return xscaled, scaler
+
 def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
     nfeatures = dataset.shape[1]
     nsamples  = dataset.shape[0]
@@ -84,7 +90,8 @@ def main():
         "amount": 5,
         "percent": 0.75
     }
-    results = sequential_forward_selection(dataset, labels, crossvalidation_dictionary)
+    scaled_data, scaler = standardize_data(dataset)
+    results = sequential_forward_selection(scaled_data, labels, crossvalidation_dictionary)
     print(results)
 if __name__ == "__main__":
     main()

@@ -2,9 +2,9 @@ import numpy as np
 import time
 import os
 import seaborn as sns
-from sklearn.feature_selection import mutual_info_classif
-import matplotlib.pyplot as plt
-from skfeature.function.similarity_based import fisher_score
+from sklearn.feature_selection import mutual_info_classif, SelectKBest, chi2
+#import matplotlib.pyplot as plt
+#from skfeature.function.similarity_based import fisher_score
 from glob import glob
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.neural_network import MLPClassifier
@@ -56,11 +56,24 @@ def standardize_data(dataset):
     xscaled = scaler.transform(dataset)
     return xscaled
 
+def chi_squared(dataset, labels):
+    nfeatures = dataset.shape[1]
+    for i in range(nfeatures):
+        if dataset[1,i] < 0:
+            dataset = np.delete(dataset, i, axis = 1)
+    data_cat = dataset.astype(int)
+    chi2_features = SelectKBest(chi2, k = 10)
+    best_features = chi2_features.fit_transform(data_cat, labels)
+    num_features = best_features.shape[1]
+    return best_features, num_features
+
 def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
-    scaled_data = standardize_data(dataset)
-    scores = CC(dataset,labels)
+    # scaled_data = standardize_data(dataset)
+    # fisher_scores = fisher(dataset,labels)
+    chi2_features, num_features = chi_squared(dataset, labels)
+    print(num_features)
 
 if __name__ == "__main__":
     main()

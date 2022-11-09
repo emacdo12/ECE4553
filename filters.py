@@ -20,7 +20,13 @@ def fisher(data_set,labels):
     return fisher_scores
 
 def CC(data_set,labels):
-    cor 
+    importances = mutual_info_classif(data_set,labels)
+    # Plot Results
+    feat_importance = pd.Series(importances, labels.columns[0:len(labels.columns)-1])
+    feat_importance.plot(kind='barh', color = 'teal')
+    plt.show
+    return importances
+
 
 
 def load_dataset(data_folder):
@@ -54,7 +60,7 @@ def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
     scaled_data = standardize_data(dataset)
-   #  fisher_scores = fisher(dataset,labels)
+    scores = CC(dataset,labels)
 
 if __name__ == "__main__":
     main()

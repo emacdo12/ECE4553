@@ -3,8 +3,10 @@ import time
 import os
 import seaborn as sns
 from sklearn.feature_selection import mutual_info_classif, SelectKBest, chi2
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 #from skfeature.function.similarity_based import fisher_score
+from sklearn.feature_selection import mutual_info_classif
+
 from glob import glob
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.neural_network import MLPClassifier
@@ -19,13 +21,16 @@ def fisher(data_set,labels):
     plt.show
     return fisher_scores
 
-def CC(data_set,labels):
+def info_gain(data_set,labels):
     importances = mutual_info_classif(data_set,labels)
-    # Plot Results
-    feat_importance = pd.Series(importances, labels.columns[0:len(labels.columns)-1])
-    feat_importance.plot(kind='barh', color = 'teal')
-    plt.show
     return importances
+
+def CC(data_set,labels):
+    df = pd.DataFrame(data_set)
+    cor = df.corr()
+    plt.figure(figsize = (10,6))
+    sns.heatmap(cor,annot = True)
+    return cor
 
 
 
@@ -70,10 +75,12 @@ def chi_squared(dataset, labels):
 def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
+    # importances = info_gain(dataset,labels)
+    cor = CC(dataset,labels)
+    print(cor)
     # scaled_data = standardize_data(dataset)
     # fisher_scores = fisher(dataset,labels)
-    chi2_features, num_features = chi_squared(dataset, labels)
-    print(num_features)
+    # chi2_features, num_features = chi_squared(dataset, labels)
 
 if __name__ == "__main__":
     main()

@@ -201,4 +201,7 @@ xlabel('Predictor rank')
 ylabel('Fisher Score')
 xticklabels(strrep(allData_t.Properties.VariableNames(index(1:15)),'_','\_'))
 
+%% Relief
+[idx_rel,weights_rel] = relieff(allData_a,allData_bl,5);
+
 

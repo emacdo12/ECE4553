@@ -6,6 +6,7 @@ from sklearn.feature_selection import mutual_info_classif, SelectKBest, chi2
 import matplotlib.pyplot as plt
 #from skfeature.function.similarity_based import fisher_score
 from sklearn.feature_selection import mutual_info_classif
+from sklearn.ensemble import RandomForestClassifier
 
 from glob import glob
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
@@ -28,9 +29,19 @@ def info_gain(data_set,labels):
 def CC(data_set,labels):
     df = pd.DataFrame(data_set)
     cor = df.corr()
-    plt.figure(figsize = (10,6))
-    sns.heatmap(cor,annot = True)
+    plt.figure()
+    sns.heatmap(cor)
+    plt.show()
     return cor
+
+def random_forest_importance(data_set,labels):
+    df = pd.DataFrame(data_set)
+    model = RandomForestClassifier(n_estimators=340)
+    model.fit(data_set,labels)
+    importances = model.feature_importances_
+
+    return importances
+
 
 
 
@@ -76,8 +87,9 @@ def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
     # importances = info_gain(dataset,labels)
-    cor = CC(dataset,labels)
-    print(cor)
+    # cor = CC(dataset,labels)
+    forest_importances = random_forest_importance(dataset,labels)
+    print(forest_importances)
     # scaled_data = standardize_data(dataset)
     # fisher_scores = fisher(dataset,labels)
     # chi2_features, num_features = chi_squared(dataset, labels)

@@ -4,8 +4,6 @@ import os
 import seaborn as sns
 from sklearn.feature_selection import mutual_info_classif, SelectKBest, chi2
 import matplotlib.pyplot as plt
-#from skfeature.function.similarity_based import fisher_score
-from sklearn.feature_selection import mutual_info_classif
 from sklearn.ensemble import RandomForestClassifier
 
 from glob import glob
@@ -13,14 +11,6 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.neural_network import MLPClassifier
 from sklearn import preprocessing
 import pandas as pd
-
-def fisher(data_set,labels):
-    fisher_scores = fisher_score.fisher_score(data_set,labels)
-    # Plot Results
-    feat_importance = pd.Series(fisher_scores, labels.columns[0:len(labels.columns)-1])
-    feat_importance.plot(kind='barh', color = 'teal')
-    plt.show
-    return fisher_scores
 
 def info_gain(data_set,labels):
     importances = mutual_info_classif(data_set,labels)
@@ -86,13 +76,20 @@ def chi_squared(dataset, labels):
 def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
-    # importances = info_gain(dataset,labels)
-    # cor = CC(dataset,labels)
+    importances = info_gain(dataset,labels)
+    cor = CC(dataset,labels)
     forest_importances = random_forest_importance(dataset,labels)
-    print(forest_importances)
-    # scaled_data = standardize_data(dataset)
-    # fisher_scores = fisher(dataset,labels)
-    # chi2_features, num_features = chi_squared(dataset, labels)
+
+    # Write to csv file
+    information_gain = np.asarray(importances)
+    np_cor = np.asarray(cor)
+    np_forest_importances = np.asarray(forest_importances)
+
+    np.savetxt("Information_gain.csv",information_gain, delimiter=",")
+    np.savetxt("Correlation.csv",np_cor, delimiter=",")
+    np.savetxt("Forest_Importance.csv",np_forest_importances, delimiter=",")
+
+
 
 if __name__ == "__main__":
     main()

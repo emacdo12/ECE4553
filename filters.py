@@ -26,7 +26,7 @@ def CC(data_set,labels):
 
 def random_forest_importance(data_set,labels):
     df = pd.DataFrame(data_set)
-    model = RandomForestClassifier(n_estimators=340)
+    model = RandomForestClassifier(n_estimators=340, n_jobs=-1)
     model.fit(data_set,labels)
     importances = model.feature_importances_
 

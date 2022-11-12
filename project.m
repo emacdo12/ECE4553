@@ -112,7 +112,7 @@ plot(score_a(strcmp(allData_bl,'BENIGN'),1), ...
 hold on
 plot(score_a(strcmp(allData_bl,'MALICIOUS'),1), ...
     score_a(strcmp(allData_bl,'MALICIOUS'),2),'xr');
-legend('Benign','Maliciouzt');
+legend('Benign','Malicious');
 title('First two dimensions of PCA')
 hold off
 
@@ -172,11 +172,11 @@ plot(score_a(strcmp(allData_l,'Web Attack � XSS'),1), ...
     score_a(strcmp(allData_l,'Web Attack � XSS'),2),'x');
 
 
-legend('Benign','Bot','DDos','DoS GoldenEye','DoS Hulk','DoS Slowhttptest', ...
+legend('Bot','DDos','DoS GoldenEye','DoS Hulk','DoS Slowhttptest', ...
     'DoS slowloris','FTP-Patator','Heartbleed','Infiltration','PortScan',...
     'SSH-Patator','Web Attack � Brute Force','Web Attack � Sql Injection',...
     'Web Attack � XSS');
-title('First two dimensions of PCA')
+title('First two dimensions of PCA (excluding Benign)')
 hold off
 
 %% MRMR
@@ -190,6 +190,7 @@ title('MRMR Scores')
 xlabel('Predictor rank')
 ylabel('Predictor importance score')
 xticklabels(strrep(allData_t.Properties.VariableNames(idx(1:15)),'_','\_'))
+xtickangle(90)
 
 %% Fishers 
 
@@ -200,6 +201,7 @@ title('Fisher Scores')
 xlabel('Predictor rank')
 ylabel('Fisher Score')
 xticklabels(strrep(allData_t.Properties.VariableNames(index(1:15)),'_','\_'))
+xtickangle(90)
 
 %% Relief
 [idx_rel,weights_rel] = relieff(allData_a,allData_bl,5);

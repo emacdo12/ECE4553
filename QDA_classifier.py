@@ -2,6 +2,7 @@ import numpy as np
 import time
 import os
 from glob import glob
+from sklearn import preprocessing
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import pandas as pd
 
@@ -28,9 +29,13 @@ def load_dataset(data_folder):
     labels = np.array([i == "BENIGN" for i in labels]).astype(int)
     return labels, dataset
     
-
+def standardize_data(dataset):
+    scaler = preprocessing.StandardScaler().fit(dataset)
+    xscaled = scaler.transform(dataset)
+    return xscaled, scaler
 
 def QDA_Classify(dataset, labels, crossvalidation_dictionary):
+    start_time = time.time()
     nfeatures = dataset.shape[1]
     nsamples  = dataset.shape[0]
     amount = crossvalidation_dictionary["amount"]
@@ -54,21 +59,25 @@ def QDA_Classify(dataset, labels, crossvalidation_dictionary):
         accuracy += sum(predictions == te_labels)/te_labels.shape[0] / amount
         # average the accuracy
         results = accuracy
-    return results
+    end_time = (time.time() - start_time)/60
+    return results, end_time
 
 
 
 def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
-    features = [50,41,61,69,60,24,0,13,62,49]
-    newdataset = dataset[:,features]
+    features = [40,6,21,45,35,58,25,11,10,27]
+    scaled_data, scaler = standardize_data(dataset)
+    newdataset = scaled_data[:,features]
     crossvalidation_dictionary = {
         "amount": 5,
         "percent": 0.75
     }
-    results = QDA_Classify(newdataset, labels, crossvalidation_dictionary)
+    results, runtime = QDA_Classify(newdataset, labels, crossvalidation_dictionary)
     print('Features: ' + str(features))
     print('Accuracy: ' + str(results))
+    print('Time (in minutes): ' + str(runtime))
+    
 if __name__ == "__main__":
     main()

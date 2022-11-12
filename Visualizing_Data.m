@@ -93,6 +93,7 @@ title('MRMR Scores')
 xlabel('Predictor rank')
 ylabel('Predictor importance score')
 xticklabels(strrep(allData_t.Properties.VariableNames(idx(1:15)),'_','\_'))
+xtickangle(90)
 
 %% Fishers 
 
@@ -103,6 +104,7 @@ title('Fisher Scores')
 xlabel('Predictor rank')
 ylabel('Fisher Score')
 xticklabels(strrep(allData_t.Properties.VariableNames(index(1:15)),'_','\_'))
+xtickangle(90)
 
 %% --Load Python Data--
 
@@ -111,8 +113,10 @@ correlation_a = table2array(correlation);
 information_gain = table2array(readtable('Information_gain.csv'));
 Forest_Importances = table2array(readtable("Forest_Importance.csv"));
 feature_nums = [1:70];
+
 figure()
 heatmap(feature_nums,feature_nums,correlation_a)
+
 figure()
 [information_gain, Index] = sort(information_gain,'descend');
 bar(information_gain(1:15))
@@ -120,6 +124,8 @@ title('Information Gain');
 ylabel('Score')
 xlabel('Features')
 xticklabels(strrep(allData_t.Properties.VariableNames(Index(1:15)),'_','\_'))
+xtickangle(90)
+
 figure()
 [for_importances,f_index] = sort(Forest_Importances,'descend');
 bar(for_importances(1:15))
@@ -127,4 +133,5 @@ title('Forest Feature Importance')
 ylabel('Score')
 xlabel('Features')
 xticklabels(strrep(allData_t.Properties.VariableNames(f_index(1:15)),'_','\_'))
+xtickangle(90)
 

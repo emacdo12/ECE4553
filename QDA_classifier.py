@@ -28,9 +28,13 @@ def load_dataset(data_folder):
     labels = np.array([i == "BENIGN" for i in labels]).astype(int)
     return labels, dataset
     
-
+def standardize_data(dataset):
+    scaler = preprocessing.StandardScaler().fit(dataset)
+    xscaled = scaler.transform(dataset)
+    return xscaled, scaler
 
 def QDA_Classify(dataset, labels, crossvalidation_dictionary):
+    start_time = time.time()
     nfeatures = dataset.shape[1]
     nsamples  = dataset.shape[0]
     amount = crossvalidation_dictionary["amount"]
@@ -54,7 +58,8 @@ def QDA_Classify(dataset, labels, crossvalidation_dictionary):
         accuracy += sum(predictions == te_labels)/te_labels.shape[0] / amount
         # average the accuracy
         results = accuracy
-    return results
+    end_time = (time.time() - start_time)/60
+    return results, end_time
 
 
 
@@ -67,8 +72,10 @@ def main():
         "amount": 5,
         "percent": 0.75
     }
-    results = QDA_Classify(newdataset, labels, crossvalidation_dictionary)
+    results, runtime = QDA_Classify(newdataset, labels, crossvalidation_dictionary)
     print('Features: ' + str(features))
     print('Accuracy: ' + str(results))
+    print('Time (in minutes): ' + str(runtime))
+    
 if __name__ == "__main__":
     main()

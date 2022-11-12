@@ -2,6 +2,7 @@ import numpy as np
 import time
 import os
 from glob import glob
+from sklearn import preprocessing
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import pandas as pd
 
@@ -25,8 +26,44 @@ def load_dataset(data_folder):
     dataset = np.delete(dataset, one_value_columns, axis=1)
     # check for infinities in dataset, throw out those rows
     #labels = np.array([i == "BENIGN" for i in labels]).astype(int)
+    for i in range(labels.shape[0]):
+        if "Bot" in labels[i]:
+            labels[i] = 2
+        elif "DDoS" in labels[i]:
+            labels[i] = 3
+        elif "GoldenEye" in labels[i]:
+            labels[i] = 4
+        elif "Hulk" in labels[i]:
+            labels[i] = 5
+        elif "Slowhttptest" in labels[i]:
+            labels[i] = 6
+        elif "slowloris" in labels[i]:
+            labels[i] = 7
+        elif "FTP-Patator" in labels[i]:
+            labels[i] = 8
+        elif "Heartbleed" in labels[i]:
+            labels[i] = 9
+        elif "Infiltration" in labels[i]:
+            labels[i] = 10
+        elif "PortScan" in labels[i]:
+            labels[i] = 11
+        elif "SSH-Patator" in labels[i]:
+            labels[i] = 12
+        elif "Brute" in labels[i]:
+            labels[i] = 13
+        elif "Sql" in labels[i]:
+            labels[i] = 14
+        elif "XSS" in labels[i]:
+            labels[i] = 15
+        else:
+            labels[i] = 1
+    labels = labels.astype(int)   
     return labels, dataset
-    
+
+def standardize_data(dataset):
+    scaler = preprocessing.StandardScaler().fit(dataset)
+    xscaled = scaler.transform(dataset)
+    return xscaled, scaler
 
 
 def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
@@ -43,7 +80,6 @@ def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
     for iteration in range(10):
         start_time = time.time()
         # your feature set has <iteration> permanent features
-
         for fi in range(nfeatures):
             if fi in best_order:
                 continue
@@ -82,12 +118,12 @@ def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
 def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
-    
+    scaled_data, scaler = standardize_data(dataset)
     crossvalidation_dictionary = {
         "amount": 5,
         "percent": 0.75
     }
-    results, order = sequential_forward_selection(dataset, labels, crossvalidation_dictionary)
+    results, order = sequential_forward_selection(scaled_data, labels, crossvalidation_dictionary)
     print(order)
 if __name__ == "__main__":
     main()

@@ -2,6 +2,7 @@ import numpy as np
 import time
 import os
 from glob import glob
+from sklearn import preprocessing
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import pandas as pd
 
@@ -66,8 +67,9 @@ def QDA_Classify(dataset, labels, crossvalidation_dictionary):
 def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
-    features = [50,41,61,69,60,24,0,13,62,49]
-    newdataset = dataset[:,features]
+    features = [40,6,21,45,35,58,25,11,10,27]
+    scaled_data, scaler = standardize_data(dataset)
+    newdataset = scaled_data[:,features]
     crossvalidation_dictionary = {
         "amount": 5,
         "percent": 0.75

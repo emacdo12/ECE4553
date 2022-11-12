@@ -119,7 +119,7 @@ Forest_Importances = table2array(readtable("Forest_Importance.csv"));
 feature_nums = [1:70];
 
 figure()
-heatmap(feature_nums,feature_nums,correlation_a)
+heatmap(feature_nums,feature_nums,abs(correlation_a))
 
 figure()
 [information_gain, Index] = sort(information_gain,'descend');

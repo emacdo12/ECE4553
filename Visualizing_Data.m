@@ -62,6 +62,8 @@ for i = 1:size(allData_a,1)
         end
     end
 end
+deleted_rows = allData_a(delete_rows,:);
+deleted_labels = allData_l(delete_rows,:);
 allData_a(delete_rows,:) = [];
 allData_l(delete_rows,:) = [];
 allData_bl(delete_rows,:) = [];
@@ -76,6 +78,8 @@ for i = 1:width(allData_a)
         delete_columns = [delete_columns i];
     end
 end
+
+deleted_features = allData_t.Properties.VariableNames(delete_columns);
 
 allData_a(:,delete_columns) = [];
 for i = 1:length(delete_columns)

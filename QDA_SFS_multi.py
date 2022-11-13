@@ -77,7 +77,7 @@ def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
     perm_featureset = np.array([])
     # split dataset <amount> times
     #for iteration in range(nfeatures):
-    for iteration in range(10):
+    for iteration in range(30):
         start_time = time.time()
         # your feature set has <iteration> permanent features
         for fi in range(nfeatures):

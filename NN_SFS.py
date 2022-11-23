@@ -67,7 +67,7 @@ def sequential_forward_selection(dataset, labels, crossvalidation_dictionary):
                 tr_labels = labels[tr_ids]
                 te_labels = labels[te_ids]
                 # train classifier
-                clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(5, 2), random_state=1)
+                clf = MLPClassifier(solver='adam',verbose=True, random_state=1)
                 clf.fit(tr_data,tr_labels)
                 predictions = clf.predict(te_data)
                 # get accuracy

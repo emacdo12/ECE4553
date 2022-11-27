@@ -24,9 +24,41 @@ def load_dataset(data_folder):
     # check for only one value
     one_value_columns = [id for id, i in enumerate(dataset.T) if (np.unique(i).shape[0]==1) ]
     dataset = np.delete(dataset, one_value_columns, axis=1)
+    for i in range(labels.shape[0]):
+        if "Bot" in labels[i]:
+            labels[i] = 2
+        elif "DDoS" in labels[i]:
+            labels[i] = 3
+        elif "GoldenEye" in labels[i]:
+            labels[i] = 4
+        elif "Hulk" in labels[i]:
+            labels[i] = 5
+        elif "Slowhttptest" in labels[i]:
+            labels[i] = 6
+        elif "slowloris" in labels[i]:
+            labels[i] = 7
+        elif "FTP-Patator" in labels[i]:
+            labels[i] = 8
+        elif "Heartbleed" in labels[i]:
+            labels[i] = 9
+        elif "Infiltration" in labels[i]:
+            labels[i] = 10
+        elif "PortScan" in labels[i]:
+            labels[i] = 11
+        elif "SSH-Patator" in labels[i]:
+            labels[i] = 12
+        elif "Brute" in labels[i]:
+            labels[i] = 13
+        elif "Sql" in labels[i]:
+            labels[i] = 14
+        elif "XSS" in labels[i]:
+            labels[i] = 15
+        else:
+            labels[i] = 1
+    labels = labels.astype(int)   
     # comment two lines below to remove binary case
-    print('Binary case')
-    labels = np.array([i == "BENIGN" for i in labels]).astype(int)
+    #print('Binary case')
+    #labels = np.array([i == "BENIGN" for i in labels]).astype(int)
     return labels, dataset
     
 def standardize_data(dataset):
@@ -67,9 +99,9 @@ def QDA_Classify(dataset, labels, crossvalidation_dictionary):
 def main():
     data_folder = 'data'
     labels, dataset = load_dataset(data_folder)
-    features = [40,6,21,45,35,58,25,11,10,27]
+    features = [39, 58, 8, 50, 22, 37, 9, 45, 40, 38, 49, 20, 25, 52, 10, 15, 59, 13, 7, 0, 46, 1, 14, 23, 21, 16, 68, 17, 61, 2] 
     scaled_data, scaler = standardize_data(dataset)
-    newdataset = scaled_data[:,features]
+    newdataset = scaled_data[:,features] 
     crossvalidation_dictionary = {
         "amount": 5,
         "percent": 0.75

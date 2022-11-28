@@ -206,4 +206,7 @@ xtickangle(90)
 %% Relief
 [idx_rel,weights_rel] = relieff(allData_a,allData_bl,5);
 
+%% Neural Network
+
+NNMdl = 
 

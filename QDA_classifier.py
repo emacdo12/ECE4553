@@ -55,24 +55,29 @@ def load_dataset(data_folder):
             labels[i] = 15
         else:
             labels[i] = 1
-    labels = labels.astype(int)   
+    labels = labels.astype(int)  
     # comment two lines below to remove binary case
     #print('Binary case')
-    #labels = np.array([i == "BENIGN" for i in labels]).astype(int)
-    return labels, dataset
+    binary_labels = np.array([i == 1 for i in labels]).astype(int)
+    return binary_labels,labels, dataset
     
 def standardize_data(dataset):
     scaler = preprocessing.StandardScaler().fit(dataset)
     xscaled = scaler.transform(dataset)
     return xscaled, scaler
 
-def QDA_Classify(dataset, labels, crossvalidation_dictionary):
+def QDA_Classify(dataset, labels, crossvalidation_dictionary,binary_labels):
     start_time = time.time()
     nfeatures = dataset.shape[1]
     nsamples  = dataset.shape[0]
     amount = crossvalidation_dictionary["amount"]
     percent = crossvalidation_dictionary["percent"]
-    accuracy = 0
+    accuracy = []
+    tp = []
+    tn = []
+    fp = []
+    fn = []
+
     for k in range(amount):
         np.random.seed(seed=k)
         id = np.arange(nsamples)
@@ -81,32 +86,91 @@ def QDA_Classify(dataset, labels, crossvalidation_dictionary):
         te_ids = id[int(percent * nsamples):]
         tr_data = dataset[tr_ids,:]
         te_data = dataset[te_ids, :]
+
         tr_labels = labels[tr_ids]
-        te_labels = labels[te_ids]
+        te_labels = binary_labels[te_ids]
         # train classifier
         qda = QuadraticDiscriminantAnalysis()
         qda.fit(tr_data, tr_labels)
         predictions = qda.predict(te_data)
+        for i in range(predictions.shape[0]):
+            if predictions[i] != 1:
+                predictions[i] = 0
         # get accuracy
-        accuracy += sum(predictions == te_labels)/te_labels.shape[0] / amount
+        TP,TN,FP,FN,acc = get_results(predictions,te_labels)
+        tp.append(TP)
+        tn.append(TN)
+        fp.append(FP)
+        fn.append(FN)
+        accuracy.append(acc)
+
+        # accuracy += sum(predictions == te_labels)/te_labels.shape[0] / amount
         # average the accuracy
-        results = accuracy
+        results = np.average(accuracy)
+    print('TP: ' + str(np.average(tp)))
+    print('FP: ' + str(np.average(fp)))
+    print('TN: ' + str(np.average(tn)))
+    print('FN: ' + str(np.average(fn)))
+    print('Accuracy: ' + str(np.average(accuracy)))
+    print('STD: ' + str(np.std(accuracy)))
+    std = np.std(accuracy)
     end_time = (time.time() - start_time)/60
     return results, end_time
+
+def get_results(pred_labels,true_labels):
+    a = 0
+    b = 0
+    c = 0
+    d = 0
+    for i in range (true_labels.shape[0]):
+        if true_labels[i] == pred_labels[i]:
+            if pred_labels[i] == 1:
+                a = a + 1
+            else:
+                d = d + 1
+        else:
+            if pred_labels[i] == 1:
+                c = c + 1
+            else:
+                b = b + 1
+    
+    TP = d/(c+d)
+    TN = a/(a+b)
+    FP = b/(a+b)
+    FN = c/(c+d)
+    acc = (a+d)/(a+b+c+d)
+
+    return TP,TN,FP,FN,acc
+
+
+
+
 
 
 
 def main():
     data_folder = 'data'
-    labels, dataset = load_dataset(data_folder)
-    features = [39, 58, 8, 50, 22, 37, 9, 45, 40, 38, 49, 20, 25, 52, 10, 15, 59, 13, 7, 0, 46, 1, 14, 23, 21, 16, 68, 17, 61, 2] 
+    ULDA = np.loadtxt("ULDA_scaler.csv", delimiter=",")
+    binary_labels,labels, dataset = load_dataset(data_folder)
+    # features = [39, 58, 8, 50, 22, 37, 9, 45, 40, 38, 49, 20, 25, 52, 10, 15, 59, 13, 7, 0, 46, 1, 14, 23, 21, 16, 68, 17, 61, 2] # SFS
+    # features = [13,10,12,52,22,66,68,18,23,69,36,17,50,11,44,1,20,38,39,46,27,0,28,25,16,40,41,37,21,7] # Fisher
+    # features = [50,41,61,69,60,24,0,13,62,49,59,18,40,53,64,6,33,52,65,44,20,38,14,5,68,58,22,29,12,23] # MRMR
+    # features = [50,40,39,38,57,5,58,0,12,52,55,4,37,10,59,6,51,8,18,14,1,35,13,23,15,34,9,20,16,33] # Info gain
+    # features = [50,41,61,69,60,24,0,13,62,49,39, 58, 8, 22, 37, 9, 45, 40,20,38,57,5,12,52,55,4,10,59]
+    # features = [50,41,40,13,10,12,39,58,22,37,9,45,40,38,49,20,25,61,69,60,24,0,62,53,57,5,4,8,59]
+    features = [39, 58, 8, 50, 22, 37, 9, 45, 40, 38, 49, 20, 25, 52, 10, 15, 59, 13, 7, 0, 46, 1, 14, 23, 21, 16, 68, 17, 61, 2, 54, 3, 34, 18, 5, 41, 44, 11, 36, 69, 4, 65, 56, 26, 19, 6, 62, 24, 28, 33]
+    ULDA_vector =  np.matmul(dataset , ULDA)
+    #features = list(range(1,14))
+
+
+    
     scaled_data, scaler = standardize_data(dataset)
     newdataset = scaled_data[:,features] 
     crossvalidation_dictionary = {
         "amount": 5,
         "percent": 0.75
     }
-    results, runtime = QDA_Classify(newdataset, labels, crossvalidation_dictionary)
+    results, runtime = QDA_Classify(newdataset, labels, crossvalidation_dictionary,binary_labels)
     print('Features: ' + str(features))
     print('Accuracy: ' + str(results))
     print('Time (in minutes): ' + str(runtime))

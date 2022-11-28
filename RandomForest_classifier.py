@@ -57,7 +57,7 @@ def RF_classify(dataset, labels, crossvalidation_dictionary):
         tr_labels = labels[tr_ids]
         te_labels = labels[te_ids]
         # train classifier
-        rfc = RandomForestClassifier(n_estimators=340, n_jobs=7)
+        rfc = RandomForestClassifier(n_estimators=50, n_jobs=4)
         rfc.fit(tr_data, tr_labels)
         predictions = rfc.predict(te_data)
         # get accuracy

@@ -187,7 +187,7 @@ xtickangle(90)
 %% ULDA 
 W_b = my_ulda(allData_a,labels_num_b',2);
 W   = my_ulda(allData_a,labels_num,15);
-writematrix(W,"ULDA_scaler.csv");
+%writematrix(W,"ULDA_scaler.csv");
 
 %% Visualize ULDA
 

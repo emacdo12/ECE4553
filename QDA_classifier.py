@@ -107,6 +107,7 @@ def QDA_Classify(dataset, labels, crossvalidation_dictionary,binary_labels):
         # accuracy += sum(predictions == te_labels)/te_labels.shape[0] / amount
         # average the accuracy
         results = np.average(accuracy)
+    end_time = (time.time() - start_time)/60
     print('TP: ' + str(np.average(tp)))
     print('FP: ' + str(np.average(fp)))
     print('TN: ' + str(np.average(tn)))
@@ -114,7 +115,6 @@ def QDA_Classify(dataset, labels, crossvalidation_dictionary,binary_labels):
     print('Accuracy: ' + str(np.average(accuracy)))
     print('STD: ' + str(np.std(accuracy)))
     std = np.std(accuracy)
-    end_time = (time.time() - start_time)/60
     return results, end_time
 
 def get_results(pred_labels,true_labels):
@@ -151,18 +151,19 @@ def get_results(pred_labels,true_labels):
 def main():
     data_folder = 'data'
     ULDA = np.loadtxt("ULDA_scaler.csv", delimiter=",")
+    PCA = np.loadtxt("PCA_data.csv", delimiter=",")
     binary_labels,labels, dataset = load_dataset(data_folder)
-    # features = [39, 58, 8, 50, 22, 37, 9, 45, 40, 38, 49, 20, 25, 52, 10, 15, 59, 13, 7, 0, 46, 1, 14, 23, 21, 16, 68, 17, 61, 2] # SFS
+    features = [39, 58, 8, 50, 22, 37, 9, 45, 40, 38, 49, 20, 25, 52, 10, 15, 59, 13, 7, 0, 46, 1, 14, 23, 21, 16, 68, 17, 61, 2] # SFFS
     # features = [13,10,12,52,22,66,68,18,23,69,36,17,50,11,44,1,20,38,39,46,27,0,28,25,16,40,41,37,21,7] # Fisher
     # features = [50,41,61,69,60,24,0,13,62,49,59,18,40,53,64,6,33,52,65,44,20,38,14,5,68,58,22,29,12,23] # MRMR
     # features = [50,40,39,38,57,5,58,0,12,52,55,4,37,10,59,6,51,8,18,14,1,35,13,23,15,34,9,20,16,33] # Info gain
     # features = [50,41,61,69,60,24,0,13,62,49,39, 58, 8, 22, 37, 9, 45, 40,20,38,57,5,12,52,55,4,10,59]
     # features = [50,41,40,13,10,12,39,58,22,37,9,45,40,38,49,20,25,61,69,60,24,0,62,53,57,5,4,8,59]
-    features = [39, 58, 8, 50, 22, 37, 9, 45, 40, 38, 49, 20, 25, 52, 10, 15, 59, 13, 7, 0, 46, 1, 14, 23, 21, 16, 68, 17, 61, 2, 54, 3, 34, 18, 5, 41, 44, 11, 36, 69, 4, 65, 56, 26, 19, 6, 62, 24, 28, 33]
+    # features = [39, 58, 8, 50, 22, 37, 9, 45, 40, 38, 49, 20, 25, 52, 10, 15, 59, 13, 7, 0, 46, 1, 14, 23, 21, 16, 68, 17, 61, 2, 54, 3, 34, 18, 5, 41, 44, 11, 36, 69, 4, 65, 56, 26, 19, 6, 62, 24, 28, 33]
     ULDA_vector =  np.matmul(dataset , ULDA)
     #features = list(range(1,14))
-
-
+    pcadataset = PCA[:,0:5]
+    #features = [0, 1, 2, 3, 4, 5]
     
     scaled_data, scaler = standardize_data(dataset)
     newdataset = scaled_data[:,features] 

@@ -45,6 +45,10 @@ def RF_classify(dataset, labels, crossvalidation_dictionary):
     best_order = []
     perm_featureset = np.array([])
     accuracy = 0
+    tp = []
+    tn = []
+    fp = []
+    fn = []
     # split dataset <amount> times
     for k in range(amount):
         np.random.seed(seed=k)
@@ -57,16 +61,56 @@ def RF_classify(dataset, labels, crossvalidation_dictionary):
         tr_labels = labels[tr_ids]
         te_labels = labels[te_ids]
         # train classifier
-        rfc = RandomForestClassifier(n_estimators=50, n_jobs=4)
+        rfc = RandomForestClassifier(n_estimators=5, n_jobs=4, max_depth=20)
         rfc.fit(tr_data, tr_labels)
         predictions = rfc.predict(te_data)
+         # get accuracy
+        TP,TN,FP,FN,acc = get_results(predictions,te_labels)
+        tp.append(TP)
+        tn.append(TN)
+        fp.append(FP)
+        fn.append(FN)
+        #accuracy.append(acc)
+
         # get accuracy
         accuracy += sum(predictions == te_labels)/te_labels.shape[0] / amount
         # average the accuracy
         results = accuracy
     end_time = (time.time() - start_time)/60
+    print('TP: ' + str(np.average(tp)))
+    print('FP: ' + str(np.average(fp)))
+    print('TN: ' + str(np.average(tn)))
+    print('FN: ' + str(np.average(fn)))
+    print('Accuracy: ' + str(np.average(accuracy)))
+    print('STD: ' + str(np.std(accuracy)))
+    std = np.std(accuracy)
+    end_time = (time.time() - start_time)/60
     return results, end_time
 
+def get_results(pred_labels,true_labels):
+    a = 0
+    b = 0
+    c = 0
+    d = 0
+    for i in range (true_labels.shape[0]):
+        if true_labels[i] == pred_labels[i]:
+            if pred_labels[i] == 1:
+                a = a + 1
+            else:
+                d = d + 1
+        else:
+            if pred_labels[i] == 1:
+                c = c + 1
+            else:
+                b = b + 1
+    
+    TP = d/(c+d)
+    TN = a/(a+b)
+    FP = b/(a+b)
+    FN = c/(c+d)
+    acc = (a+d)/(a+b+c+d)
+
+    return TP,TN,FP,FN,acc
 
 def main():
     data_folder = 'data'

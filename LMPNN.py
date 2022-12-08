@@ -41,7 +41,12 @@ def MLP_Classify(dataset, labels, crossvalidation_dictionary):
     amount = crossvalidation_dictionary["amount"]
     percent = crossvalidation_dictionary["percent"]
     accuracy = 0
-    for k in range(1):
+    accuracy = []
+    tp = []
+    tn = []
+    fp = []
+    fn = []
+    for k in range(amount):
         np.random.seed(seed=k)
         id = np.arange(nsamples)
         np.random.shuffle(id)
@@ -56,13 +61,50 @@ def MLP_Classify(dataset, labels, crossvalidation_dictionary):
         clf.fit(tr_data, tr_labels)
         predictions = clf.predict(te_data)
         # get accuracy
-        accuracy += sum(predictions == te_labels)/te_labels.shape[0] / amount
+        TP,TN,FP,FN,acc = get_results(predictions,te_labels)
+        tp.append(TP)
+        tn.append(TN)
+        fp.append(FP)
+        fn.append(FN)
+        accuracy.append(acc)
+        #accuracy += sum(predictions == te_labels)/te_labels.shape[0] / amount
         # average the accuracy
         results = accuracy
         print("Iteration Complete!")
     end_time = (time.time() - start_time)/60
+    print('TP: ' + str(np.average(tp)))
+    print('FP: ' + str(np.average(fp)))
+    print('TN: ' + str(np.average(tn)))
+    print('FN: ' + str(np.average(fn)))
+    print('Accuracy: ' + str(np.average(accuracy)))
+    print('STD: ' + str(np.std(accuracy)))
+    std = np.std(accuracy)
     return results, end_time
 
+def get_results(pred_labels,true_labels):
+    a = 0
+    b = 0
+    c = 0
+    d = 0
+    for i in range (true_labels.shape[0]):
+        if true_labels[i] == pred_labels[i]:
+            if pred_labels[i] == 1:
+                a = a + 1
+            else:
+                d = d + 1
+        else:
+            if pred_labels[i] == 1:
+                c = c + 1
+            else:
+                b = b + 1
+    
+    TP = d/(c+d)
+    TN = a/(a+b)
+    FP = b/(a+b)
+    FN = c/(c+d)
+    acc = (a+d)/(a+b+c+d)
+
+    return TP,TN,FP,FN,acc
 
 def main():
     data_folder = 'data'
